@@ -45,6 +45,11 @@ export function setProject(name: string, path: string): void {
 export function listProjects(): void {
   const content = readConfigFile(projectsFile);
   const keys = Object.keys(content);
+  if (keys.length === 0) {
+    console.log(chalk.yellowBright("您还没有设置的项目"));
+    console.log(chalk.yellowBright("设置项目: vs config <alias> <path>"));
+    return;
+  }
   keys.forEach((key) => {
     console.log(chalk.greenBright(`${key}: ${content[key]}`));
   });
