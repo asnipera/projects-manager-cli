@@ -29,7 +29,10 @@ function readConfigFile(file: string): Record<string, string> {
 }
 
 // 设置项目
-export function setProject(name: string, path: string): void {
+export function setProject(name: string, path?: string): void {
+  if (!path) {
+    path = process.cwd();
+  }
   if (!existsSync(path)) {
     console.log(chalk.yellowBright(`文件夹不存在: ${path}`));
     return;
@@ -87,10 +90,10 @@ export function openProject(alias: string) {
 }
 
 // 设置exe客户端名称
-export function setExeClinetName(name: string) {
+export function setClinetName(name: string) {
   const configFile = getConfigFile(initFile);
-  const content = readConfigFile(projectsFile);
+  const content = readConfigFile(initFile);
   const json = Object.assign(content, { clientName: name });
   writeFileSync(configFile, JSON.stringify(json));
-  console.log(chalk.greenBright(`exe客户端名称已设置为: ${name}`));
+  console.log(chalk.greenBright(`客户端已设置为: ${name}`));
 }

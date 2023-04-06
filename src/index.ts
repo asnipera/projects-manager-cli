@@ -1,13 +1,13 @@
 import { cac } from "cac";
 import chalk from "chalk";
 import pkg from "../package.json";
-import { detProject, listProjects, openProject, setExeClinetName, setProject } from "./utils";
+import { detProject, listProjects, openProject, setClinetName, setProject } from "./utils";
 
 const cli = cac();
 
 cli
-  .command("config <name> <path>", "config a project path")
-  .example("py config uc /Users/xxx/uc")
+  .command("add <name> [path]", "add a project")
+  .example("pm config uc /Users/xxx/uc")
   .action((name, path) => {
     setProject(name, path);
   });
@@ -28,7 +28,7 @@ cli
   });
 
 cli.command("set-client <clientName>", "set client name").action((name) => {
-  setExeClinetName(name);
+  setClinetName(name);
 });
 
 // Listen to unknown commands

@@ -48,8 +48,10 @@ pm set-client pycharm
 
 add a project to the project list
 
+if you don't specify the projectPath, the `current path` will be used
+
 ```bash
-pm config <projectName> <projectPath>
+pm add <projectName> [projectPath]
 ```
 
 remove a project from the project list
