@@ -34,7 +34,7 @@ export function setProject(name: string, path?: string): void {
     path = process.cwd();
   }
   if (!existsSync(path)) {
-    console.log(chalk.yellowBright(`文件夹不存在: ${path}`));
+    console.log(chalk.yellowBright(`文件或文件夹不存在: ${path}`));
     return;
   }
   const configFile = getConfigFile(projectsFile);
@@ -49,8 +49,8 @@ export function listProjects(): void {
   const content = readConfigFile(projectsFile);
   const keys = Object.keys(content);
   if (keys.length === 0) {
-    console.log(chalk.yellowBright("您还没有设置的项目"));
-    console.log(chalk.yellowBright("设置项目: vs config <alias> <path>"));
+    console.log(chalk.yellowBright("您还没有设置此link"));
+    console.log(chalk.yellowBright("设置项目: vs add <alias> <path>"));
     return;
   }
   keys.forEach((key) => {
@@ -72,11 +72,11 @@ export function openProject(alias: string) {
   const content = readConfigFile(projectsFile);
   const path = content[alias];
   if (!path) {
-    console.log(`请先设置${alias}的文件夹路径: ${chalk.greenBright(`vs config ${alias} <path>`)}`);
+    console.log(`请先设置${alias}的路径: ${chalk.greenBright(`pm add ${alias} <path>`)}`);
     return;
   }
   if (!existsSync(path)) {
-    console.log(chalk.red(`文件夹不存在: ${path}`));
+    console.log(chalk.red(`文件或文件夹不存在: ${path}`));
     return;
   }
   const config = readConfigFile(initFile);

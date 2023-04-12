@@ -6,23 +6,22 @@ import { detProject, listProjects, openProject, setClinetName, setProject } from
 const cli = cac();
 
 cli
-  .command("add <name> [path]", "add a project")
-  .example("pm config uc /Users/xxx/uc")
+  .command("add <name> [path]", "add a link")
+  .example("lk add uc /Users/xxx/uc")
   .action((name, path) => {
     setProject(name, path);
   });
 
-cli.command("list", "list all projects").action(() => {
+cli.command("list", "list all links").action(() => {
   listProjects();
 });
 
-cli.command("remove <name>", "remove project").action((name) => {
+cli.command("remove <name>", "remove link").action((name) => {
   detProject(name);
 });
 
 cli
-  .command("<name>", "open project")
-  .alias("pm")
+  .command("<name>", "open link")
   .action((name) => {
     openProject(name);
   });

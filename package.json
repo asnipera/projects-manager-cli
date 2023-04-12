@@ -1,14 +1,14 @@
 {
-  "name": "projects-manager-cli",
+  "name": "link-manager-cli",
   "version": "1.0.2",
   "files": [
     "bin",
     "dist"
   ],
   "bin": {
-    "projects-manager-cli": "bin/index.mjs",
-    "pmc": "bin/index.mjs",
-    "pm": "bin/index.mjs"
+    "link-manager-cli": "bin/index.mjs",
+    "lkm": "bin/index.mjs",
+    "lk": "bin/index.mjs"
   },
   "type": "module",
   "scripts": {
