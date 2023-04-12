@@ -1,7 +1,7 @@
-<h1 align="center">projects-manager-cli</h1>
+<h1 align="center">link-manager-cli</h1>
 
 <p align="center">
-open project by terminal wherever you are
+open file or dir by terminal wherever you are
 </p>
 <p align="center">
 <a href="https://www.npmjs.com/package/projects-manager-cli"><img src="https://img.shields.io/npm/v/projects-manager-cli?color=a1b858&label=" alt="projects-manager-cli"></a>
@@ -12,17 +12,16 @@ open project by terminal wherever you are
 ## Install
 
 ```bash
-npm install -g projects-manager-cli
+npm install -g link-manager-cli
 ```
 
 ## Bin
 
 ```bash
 "bin": {
-   "projects-manager-cli": "bin/index.mjs",
-   "pmc": "bin/index.mjs",
-   "pm": "bin/index.mjs",
-   "py": "bin/index.mjs"
+   "link-manager-cli": "bin/index.mjs",
+   "lkm": "bin/index.mjs",
+   "lk": "bin/index.mjs"
 }
 ```
 
@@ -51,31 +50,31 @@ add a project to the project list
 if you don't specify the projectPath, the `current path` will be used
 
 ```bash
-pm add <projectName> [projectPath]
+lk add <projectName> [projectPath]
 ```
 
 remove a project from the project list
 
 ```bash
-pm remove <projectName>
+lk remove <projectName>
 ```
 
 list all projects
 
 ```bash
-pm list
+lk list
 ```
 
 open a project
 
 ```bash
-pm <projectName>
+lk <projectName>
 ```
 
 ## See help for more information
 
 ```
-pm --help
+lk --help
 ```
 
 ## License
