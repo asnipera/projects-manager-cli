@@ -3,10 +3,12 @@ import { execaSync } from "execa";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
+import prompt from "prompts";
 
 interface Project {
   path: string;
   desc?: string;
+  sort?: number;
 }
 
 const projectsFile = "projects.json";
@@ -33,6 +35,15 @@ function readConfigFile(file: string): Record<string, Project> {
   return {};
 }
 
+// 获取sort的最大值
+function getMaxSort(content: Record<string, Project>): number {
+  const keys = Object.keys(content);
+  if (keys.length === 0) {
+    return 0;
+  }
+  return Math.max(...keys.map((key) => content[key].sort ?? 0));
+}
+
 // 设置项目
 export function setProject(name: string, path?: string, desc?: string): void {
   if (!path || path === ".") {
@@ -48,23 +59,38 @@ export function setProject(name: string, path?: string, desc?: string): void {
     [name]: {
       path,
       desc,
+      sort: getMaxSort(content) + 1,
     },
   });
   writeFileSync(configFile, JSON.stringify(json));
   console.log(chalk.greenBright(`${name}已设置成功`));
 }
 
+// 获取项目列表
+function getProjectList(content?: Record<string, Project>, showPath?: boolean): string[] {
+  const contentJson = content ?? readConfigFile(projectsFile);
+  const keys = Object.keys(sortContent(contentJson));
+  if (keys.length === 0) {
+    console.log(chalk.yellowBright("您还没有设置过任何link"));
+    console.log(chalk.yellowBright("添加您的第一个link: lk add <alias> [path] [desc]"));
+    return [];
+  }
+  return keys.map(
+    (key) =>
+      `${chalk.yellowBright(key)} ${chalk.grey(contentJson[key].desc ?? "")} ${
+        showPath ? chalk.grey(contentJson[key].path) : ""
+      }`
+  );
+}
+
 // 列出项目
 export function listProjects(): void {
-  const content = readConfigFile(projectsFile);
-  const keys = Object.keys(content);
-  if (keys.length === 0) {
-    console.log(chalk.yellowBright("您还没有设置此link"));
-    console.log(chalk.yellowBright("设置项目: lk add <alias> [path] [desc]"));
+  const list = getProjectList(undefined, true);
+  if (list.length === 0) {
     return;
   }
-  keys.forEach((key) => {
-    console.log(chalk.greenBright(`${key}: ${[content[key].desc, content[key].path].join("，")}`));
+  list.forEach((key) => {
+    console.log(chalk.greenBright(key));
   });
 }
 
@@ -77,9 +103,29 @@ export function detProject(alias: string): void {
   console.log(chalk.greenBright(`${alias}已删除`));
 }
 
+//选择一个项目
+export async function selectProject(content: Record<string, Project>) {
+  const keys = Object.keys(content);
+  const list = getProjectList(content);
+  if (list.length === 0) {
+    return "";
+  }
+  const { projectName } = await prompt({
+    type: "select",
+    name: "projectName",
+    message: "请选择要打开的link",
+    choices: keys.map((key, index) => ({ title: list[index], value: key })),
+  });
+
+  return projectName;
+}
+
 // 打开项目
-export function openProject(alias: string) {
+export async function openProject(alias: string) {
   const content = readConfigFile(projectsFile);
+  if (!alias) {
+    alias = await selectProject(content);
+  }
   const project = content[alias];
   if (!project) {
     console.log(`请先设置${alias}的路径: ${chalk.greenBright(`lk add ${alias} <path>`)}`);
@@ -95,8 +141,27 @@ export function openProject(alias: string) {
   if (stderr) {
     console.log(chalk.red(stderr));
   } else {
+    const configFile = getConfigFile(projectsFile);
+    writeFileSync(configFile, JSON.stringify(content));
     console.log(chalk.greenBright(`${alias}已打开`));
   }
+}
+
+// 根据sort, 给content降序排序
+function sortContent(content: Record<string, Project>): Record<string, Project> {
+  const keys = Object.keys(content);
+  const sortList = keys.map((key) => {
+    return {
+      key,
+      value: content[key],
+    };
+  });
+  sortList.sort((a, b) => (b.value.sort ?? 0) - (a.value.sort ?? 0));
+  const sortedContent: Record<string, Project> = {};
+  sortList.forEach(({ key }) => {
+    sortedContent[key] = content[key];
+  });
+  return sortedContent;
 }
 
 // 设置exe客户端名称

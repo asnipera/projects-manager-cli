@@ -1,1 +1,14 @@
-{"fontshare":{"path":"D:\\bat\\tools\\fast-open-project"}}
+{
+    "test": {
+        "path": "D:\\bat\\tools\\fast-open-project"
+    },
+    "b": {
+        "path": "D:\\bat\\tools\\fast-open-project",
+        "desc": "aaa",
+        "sort": 3
+    },
+    "c": {
+        "path": "D:\\\\.gitlab\\\\fe-pm",
+        "sort": 2
+    }
+}

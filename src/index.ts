@@ -20,7 +20,7 @@ cli.command("remove <name>", "remove link").action((name) => {
   detProject(name);
 });
 
-cli.command("<name>", "open link").action((name) => {
+cli.command("[name]", "open link").action((name) => {
   openProject(name);
 });
 
