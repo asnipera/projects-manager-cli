@@ -3,7 +3,9 @@ import { execaSync } from "execa";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
-import prompt from "prompts";
+import prompt from "@posva/prompts";
+import type { Choice } from "@posva/prompts";
+import { Fzf } from "fzf";
 
 interface Project {
   path: string;
@@ -35,15 +37,6 @@ function readConfigFile(file: string): Record<string, Project> {
   return {};
 }
 
-// 获取sort的最大值
-function getMaxSort(content: Record<string, Project>): number {
-  const keys = Object.keys(content);
-  if (keys.length === 0) {
-    return 0;
-  }
-  return Math.max(...keys.map((key) => content[key].sort ?? 0));
-}
-
 // 设置项目
 export function setProject(name: string, path?: string, desc?: string): void {
   if (!path || path === ".") {
@@ -67,7 +60,8 @@ export function setProject(name: string, path?: string, desc?: string): void {
 }
 
 // 获取项目列表
-function getProjectList(content?: Record<string, Project>, showPath?: boolean): string[] {
+type ProjectList = { title: string; value: string; description: string }[];
+function getProjectList(content?: Record<string, Project>, showPath?: boolean): ProjectList {
   const contentJson = content ?? readConfigFile(projectsFile);
   const keys = Object.keys(sortContent(contentJson));
   if (keys.length === 0) {
@@ -75,12 +69,15 @@ function getProjectList(content?: Record<string, Project>, showPath?: boolean): 
     console.log(chalk.yellowBright("添加您的第一个link: lk add <alias> [path] [desc]"));
     return [];
   }
-  return keys.map(
-    (key) =>
-      `${chalk.yellowBright(key)} ${chalk.grey(contentJson[key].desc ?? "")} ${
-        showPath ? chalk.grey(contentJson[key].path) : ""
-      }`
-  );
+
+  return keys.map((key) => {
+    const project = contentJson[key];
+    return {
+      title: chalk.yellowBright(key),
+      value: key,
+      description: `${chalk.grey(project.desc ?? "")} ${showPath ? chalk.grey(project.path) : ""}`,
+    };
+  });
 }
 
 // 列出项目
@@ -89,8 +86,9 @@ export function listProjects(): void {
   if (list.length === 0) {
     return;
   }
-  list.forEach((key) => {
-    console.log(chalk.greenBright(key));
+  list.forEach((project) => {
+    const { title, description } = project;
+    console.log(chalk.greenBright(title), description);
   });
 }
 
@@ -105,19 +103,43 @@ export function detProject(alias: string): void {
 
 //选择一个项目
 export async function selectProject(content: Record<string, Project>) {
-  const keys = Object.keys(content);
   const list = getProjectList(content);
   if (list.length === 0) {
     return "";
   }
+  const choices = list.map((project) => ({
+    title: project.title,
+    value: project.value,
+    description: project.description,
+  }));
+  const fzf = new Fzf(choices, {
+    selector: (item) => {
+      debugger;
+      return `${item.title} ${item.description}`;
+    },
+    casing: "case-insensitive",
+  });
   const { projectName } = await prompt({
-    type: "select",
+    type: "autocomplete",
     name: "projectName",
     message: "请选择要打开的link",
-    choices: keys.map((key, index) => ({ title: list[index], value: key })),
+    choices,
+    async suggest(input: string, choices: Choice[]) {
+      const results = fzf.find(input);
+      return results.map((r) => choices.find((c) => c.value === r.item.value));
+    },
   });
 
   return projectName;
+}
+
+//获取sort的最大值
+function getMaxSort(content: Record<string, Project>): number {
+  const keys = Object.keys(content);
+  if (keys.length === 0) {
+    return 0;
+  }
+  return Math.max(...keys.map((key) => content[key].sort ?? 0));
 }
 
 // 打开项目
@@ -142,6 +164,8 @@ export async function openProject(alias: string) {
     console.log(chalk.red(stderr));
   } else {
     const configFile = getConfigFile(projectsFile);
+    const maxSort = getMaxSort(content);
+    content[alias].sort = maxSort + 1;
     writeFileSync(configFile, JSON.stringify(content));
     console.log(chalk.greenBright(`${alias}已打开`));
   }

@@ -4,7 +4,7 @@
 open file or dir by terminal wherever you are
 </p>
 <p align="center">
-<a href="https://www.npmjs.com/package/projects-manager-cli"><img src="https://img.shields.io/npm/v/projects-manager-cli?color=a1b858&label=" alt="projects-manager-cli"></a>
+<a href="https://www.npmjs.com/package/link-manager-cli"><img src="https://img.shields.io/npm/v/link-manager-cli?color=a1b858&label=" alt="link-manager-cli"></a>
 </p>
 
 ![image](https://github.com/asnipera/projects-manager-cli/blob/master/gif/pm.gif)

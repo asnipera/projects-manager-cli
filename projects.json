@@ -1,14 +1,15 @@
 {
     "test": {
-        "path": "D:\\bat\\tools\\fast-open-project"
+        "path": "D:\\bat\\tools\\fast-open-project",
+        "sort": 6
     },
     "b": {
         "path": "D:\\bat\\tools\\fast-open-project",
         "desc": "aaa",
-        "sort": 3
+        "sort": 5
     },
     "c": {
         "path": "D:\\\\.gitlab\\\\fe-pm",
-        "sort": 2
+        "sort": 4
     }
 }
