@@ -1,15 +1,1 @@
-{
-    "test": {
-        "path": "D:\\bat\\tools\\fast-open-project",
-        "sort": 6
-    },
-    "b": {
-        "path": "D:\\bat\\tools\\fast-open-project",
-        "desc": "aaa",
-        "sort": 5
-    },
-    "c": {
-        "path": "D:\\\\.gitlab\\\\fe-pm",
-        "sort": 4
-    }
-}
+{"test":{"path":"D:\\bat\\tools\\fast-open-project","sort":6},"b":{"path":"D:\\bat\\tools\\fast-open-project","desc":"aaa","sort":5},"c":{"path":"D:\\\\.gitlab\\\\fe-pm","sort":4},"gcims":{"path":"http://gitlab.ilabpower.devops/neotrident/fe-cims","desc":"gitlab","sort":8}}

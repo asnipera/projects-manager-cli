@@ -1,6 +1,6 @@
 {
   "name": "link-manager-cli",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "files": [
     "bin",
     "dist"
@@ -13,7 +13,8 @@
   "type": "module",
   "scripts": {
     "dev": "esno ./src/index.ts",
-    "build": "vite build"
+    "build": "vite build",
+    "prepublishOnly": "pnpm build"
   },
   "main": "./dist/index.es.js",
   "module": "./dist/index.es.js",

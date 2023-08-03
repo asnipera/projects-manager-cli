@@ -37,12 +37,16 @@ function readConfigFile(file: string): Record<string, Project> {
   return {};
 }
 
+function isWebUrl(url: string) {
+  return /^https?:\/\//.test(url);
+}
+
 // 设置项目
 export function setProject(name: string, path?: string, desc?: string): void {
   if (!path || path === ".") {
     path = process.cwd();
   }
-  if (!existsSync(path)) {
+  if (!isWebUrl(path) && !existsSync(path)) {
     console.log(chalk.yellowBright(`文件或文件夹不存在: ${path}`));
     return;
   }
@@ -153,6 +157,11 @@ export async function openProject(alias: string) {
     console.log(`请先设置${alias}的路径: ${chalk.greenBright(`lk add ${alias} <path>`)}`);
     return;
   }
+  if (isWebUrl(project.path)) {
+    execaSync(`start ${project.path}`);
+    console.log(chalk.greenBright(`${alias}已打开`));
+    return;
+  }
   if (!existsSync(project.path)) {
     console.log(chalk.red(`文件或文件夹不存在: ${project}`));
     return;
@@ -214,4 +223,14 @@ export function updateConfig() {
   const configFile = getConfigFile(projectsFile);
   writeFileSync(configFile, JSON.stringify(content));
   console.log(chalk.greenBright("更新成功"));
+}
+
+export function openUrlWithBroswer(name: string) {
+  const content = readConfigFile(projectsFile);
+  const project = content[name];
+  if (!project) {
+    console.log(chalk.red(`请先设置${name}的路径: ${chalk.greenBright(`lk add ${name} <path>`)}`));
+    return;
+  }
+  execaSync(`start ${project.path}`);
 }
